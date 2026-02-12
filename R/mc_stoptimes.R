@@ -26,7 +26,7 @@
 #' 
 #' Only return arrivals/departures of the given modes.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
 #' @param FALSE. the number of events
 #' 
 #' @param radius Optional. Radius in meters.
@@ -40,6 +40,10 @@
 #' 
 #' If set to `true`, only stations that are phyiscally in the radius are considered.
 #' If set to `false`, additionally to the stations in the radius, equivalences with the same name and children are considered.
+#' @param fetchStops Experimental. Expect unannounced breaking changes (without version bumps).
+#' 
+#' Optional. Default is `false`. If set to `true`, the following stops are returned
+#' for departures and the previous stops are returned for arrivals.
 #' @param pageCursor Use the cursor to go to the next "page" of stop times.
 #' Copy the cursor from the last response and keep the original request as is.
 #' This will enable you to search for stop times in the next or previous time-window.
@@ -47,20 +51,23 @@
 #' 
 #' @param language language tags as used in OpenStreetMap / GTFS
 #' (usually BCP-47 / ISO 639-1, or ISO 639-2 if there's no ISO 639-1)
-#' @param .return_as How to return the response. One of 'list' (default), 'string', or 'raw'.
-#' @param .json_parser JSON parser when `.return_as = 'list'`. One of 'RcppSimdJson' (default) or 'jsonlite'.
-#' @param .headers Named list of additional HTTP headers to include.
-#' @param .auth Bearer token string or a function `function(req) req` to apply custom auth.
-#' @param .throttle_rate Requests per second (numeric). If set, throttling is applied.
-#' @param .build_only If TRUE, return the unperformed request object.
-#' @param .server Override the server URL for this call.
-#' @param .endpoint A string to override the path for this specific request (e.g., '/v2/users/{id}'). If provided, it will be used instead of the default path from the specification.
-#' @param .referer Optional Referer header value.
-#' @param .req_options Named list of curl options passed to `httr2::req_options()`.
-#' @param .handle_response Optional function `function(resp) ...` to post-process the response.
-#' @param .json_auto_unbox If TRUE (default), auto-unbox scalar JSON values for request bodies.
+#' @param withAlerts Optional. Default is `true`. If set to `false`, alerts are omitted in the metadata of place for all stopTimes.
+#' 
+#' @param .return_as A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.
+#' @param .json_parser A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.
+#' @param .headers A named list of extra HTTP headers to add to the request. If no 'Accept' header is provided anywhere, 'Accept: */*' will be sent by default.
+#' @param .auth An authentication token or method (e.g., a bearer token string).
+#' @param .throttle_rate A number to pass to `httr2::req_throttle()` to limit the rate of requests. For example, `15/60` means 15 requests per minute. This overrides any default rate set at client generation time.
+#' @param .build_only A logical. If TRUE, the function will build and return the httr2_request object without performing it. Defaults to FALSE.
+#' @param .server A string to override the base URL for this specific request. If provided, it will be used instead of the default server URL.
+#' @param .endpoint A string to override the path for this specific request. If provided, it will be used instead of the default path from the specification. For example, use '/v2/users' to override the endpoint path.
+#' @param .referer A string to set the Referer HTTP header.
+#' @param .req_options A named list of curl options passed to `httr2::req_options()`. Useful for timeouts, proxies, SSL, etc.
+#' @param .handle_response A function taking an `httr2_response` and returning a value. If supplied, it overrides `.return_as` / `.json_parser` handling. See helpers like `oa3_content_or_stop()`.
+#' @param .json_auto_unbox Logical. If TRUE, JSON bodies are encoded with `auto_unbox = TRUE` (jsonlite). Defaults to FALSE unless overridden.
+#' @param .paginate A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See `oa3_paginate()`.
 #' @export
-mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction = NULL, mode = NULL, FALSE. = NULL, radius = NULL, exactRadius = NULL, pageCursor = NULL, withScheduledSkippedStops = NULL, language = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL) {
+mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction = NULL, mode = NULL, FALSE. = NULL, radius = NULL, exactRadius = NULL, fetchStops = NULL, pageCursor = NULL, withScheduledSkippedStops = NULL, language = NULL, withAlerts = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
   # --- Self-contained Default Arguments ---
   default_return_as <- "raw"
   default_json_parser <- "RcppSimdJson"
@@ -81,7 +88,7 @@ mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction 
 
   # Path parameters
   path_params <- list()
-  path_template <- .endpoint %||% "/api/v4/stoptimes"
+  path_template <- .endpoint %||% "/api/v5/stoptimes"
   if (length(path_params)) {
     # URL-encode each path value
     for (nm in names(path_params)) path_params[[nm]] <- curl::curl_escape(as.character(path_params[[nm]]))
@@ -99,9 +106,11 @@ mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction 
   if (!is.null(FALSE.)) query_params[['FALSE']] <- FALSE.
   if (!is.null(radius)) query_params[['radius']] <- radius
   if (!is.null(exactRadius)) query_params[['exactRadius']] <- exactRadius
+  if (!is.null(fetchStops)) query_params[['fetchStops']] <- fetchStops
   if (!is.null(pageCursor)) query_params[['pageCursor']] <- pageCursor
   if (!is.null(withScheduledSkippedStops)) query_params[['withScheduledSkippedStops']] <- withScheduledSkippedStops
   if (!is.null(language)) query_params[['language']] <- language
+  if (!is.null(withAlerts)) query_params[['withAlerts']] <- withAlerts
   if (length(query_params) > 0) {
     req <- do.call(httr2::req_url_query, c(list(req), query_params))
   }
@@ -140,6 +149,41 @@ mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction 
 
   build_only <- .build_only %||% default_build_only
   if (isTRUE(build_only)) return(req)
+
+  paginate <- .paginate %||% NULL
+  if (!is.null(paginate)) {
+    resps <- oa3_paginate(req, paginate)
+    # If pagination is used, we return the list of responses (parsed or raw)
+    # For now, we return the raw list of responses if return_as='raw',
+    # otherwise we try to parse each one.
+    
+    return_as <- .return_as %||% default_return_as
+    return_as <- if (is.null(return_as)) 'list' else as.character(return_as)[1L]
+    
+    if (return_as == 'raw') return(resps)
+    
+    json_parser <- .json_parser %||% default_json_parser
+    json_parser <- if (is.null(json_parser)) 'RcppSimdJson' else as.character(json_parser)[1L]
+    
+    return(lapply(resps, function(resp) {
+      switch(return_as,
+        'string' = httr2::resp_body_string(resp),
+        'list' = switch(
+          json_parser,
+          'RcppSimdJson' = {
+             if (!requireNamespace('RcppSimdJson', quietly = TRUE)) {
+               httr2::resp_body_json(resp)
+             } else {
+               RcppSimdJson::fparse(httr2::resp_body_string(resp))
+             }
+          },
+          'jsonlite' = httr2::resp_body_json(resp),
+          stop("Unknown .json_parser: '", json_parser, "'.", call. = FALSE)
+        ),
+        stop("Unknown .return_as: '", return_as, "'.", call. = FALSE)
+      )
+    }))
+  }
 
   resp <- httr2::req_perform(req)
 

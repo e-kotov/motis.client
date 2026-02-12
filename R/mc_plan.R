@@ -73,6 +73,12 @@
 #' between transit connections, on the first mile, and last mile.
 #'
 #' Allowed values: FOOT, WHEELCHAIR.
+#' @param pedestrianSpeed Optional
+#' 
+#' Average speed for pedestrian routing.
+#' @param cyclingSpeed Optional
+#' 
+#' Average speed for bike routing.
 #' @param elevationCosts Optional. Default is `NONE`.
 #' 
 #' Set an elevation cost profile, to penalize routes with incline.
@@ -104,9 +110,9 @@
 #' - `joinInterlinedLegs=true` (default behavior): as only one joined leg containing all stops
 #' @param transitModes Optional. Default is `TRANSIT` which allows all transit modes (no restriction).
 #' Allowed modes for the transit part. If empty, no transit connections will be computed.
-#' For example, this can be used to allow only `METRO,SUBWAY,TRAM`.
+#' For example, this can be used to allow only `SUBURBAN,SUBWAY,TRAM`.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
 #' @param directModes Optional. Default is `WALK` which will compute walking routes as direct connections.
 #' 
 #' Modes used for direction connections from start to destination without using transit.
@@ -122,17 +128,17 @@
 #' 
 #' Only non-transit modes such as `WALK`, `BIKE`, `CAR`, `BIKE_SHARING`, etc. can be used.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
 #' @param preTransitModes Optional. Default is `WALK`. Only applies if the `from` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directModes`).
 #' 
 #' A list of modes that are allowed to be used from the `from` coordinate to the first transit stop. Example: `WALK,BIKE_SHARING`.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
 #' @param postTransitModes Optional. Default is `WALK`. Only applies if the `to` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directModes`).
 #' 
 #' A list of modes that are allowed to be used from the last transit stop to the `to` coordinate. Example: `WALK,BIKE_SHARING`.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
 #' @param directRentalFormFactors Experimental. Expect unannounced breaking changes (without version bumps).
 #' 
 #' Optional. Only applies to direct connections.
@@ -193,17 +199,35 @@
 #' 
 #' A list of rental providers that are allowed to be used for direct connections.
 #' If empty (the default), all providers are allowed.
+#' @param directRentalProviderGroups Experimental. Expect unannounced breaking changes (without version bumps).
+#' 
+#' Optional. Only applies to direct connections.
+#' 
+#' A list of rental provider groups that are allowed to be used for direct connections.
+#' If empty (the default), all providers are allowed.
 #' @param preTransitRentalProviders Experimental. Expect unannounced breaking changes (without version bumps).
 #' 
 #' Optional. Only applies if the `from` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directRentalProviders`).
 #' 
 #' A list of rental providers that are allowed to be used from the `from` coordinate to the first transit stop.
 #' If empty (the default), all providers are allowed.
+#' @param preTransitRentalProviderGroups Experimental. Expect unannounced breaking changes (without version bumps).
+#' 
+#' Optional. Only applies if the `from` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directRentalProviderGroups`).
+#' 
+#' A list of rental provider groups that are allowed to be used from the `from` coordinate to the first transit stop.
+#' If empty (the default), all providers are allowed.
 #' @param postTransitRentalProviders Experimental. Expect unannounced breaking changes (without version bumps).
 #' 
 #' Optional. Only applies if the `to` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directRentalProviders`).
 #' 
 #' A list of rental providers that are allowed to be used from the last transit stop to the `to` coordinate.
+#' If empty (the default), all providers are allowed.
+#' @param postTransitRentalProviderGroups Experimental. Expect unannounced breaking changes (without version bumps).
+#' 
+#' Optional. Only applies if the `to` place is a coordinate (not a transit stop). Does not apply to direct connections (see `directRentalProviderGroups`).
+#' 
+#' A list of rental provider groups that are allowed to be used from the last transit stop to the `to` coordinate.
 #' If empty (the default), all providers are allowed.
 #' @param ignoreDirectRentalReturnConstraints Experimental. Expect unannounced breaking changes (without version bumps).
 #' 
@@ -226,6 +250,19 @@
 #' @param numItineraries The minimum number of itineraries to compute.
 #' This is only relevant if `timetableView=true`.
 #' The default value is 5.
+#' @param maxItineraries Optional. By default all computed itineraries will be returned
+#' 
+#' The maximum number of itineraries to compute.
+#' This is only relevant if `timetableView=true`.
+#' 
+#' Note: With the current implementation, setting this to a lower
+#' number will not result in any speedup.
+#' 
+#' Note: The number of returned itineraries might be slightly higher
+#' than `maxItineraries` as there might be several itineraries with
+#' the same departure time but different number of transfers. In order
+#' to not miss any itineraries for paging, either none or all
+#' itineraries with the same departure time have to be returned.
 #' @param pageCursor Use the cursor to go to the next "page" of itineraries.
 #' Copy the cursor from the last response and keep the original request as is.
 #' This will enable you to search for itineraries in the next or previous time-window.
@@ -250,9 +287,9 @@
 #' 
 #' - `arriveBy=true`: the parameters `date` and `time` refer to the arrival time
 #' - `arriveBy=false`: the parameters `date` and `time` refer to the departure time
-#' @param searchWindow Optional. Default is 2 hours which is `7200`.
+#' @param searchWindow Optional. Default is 15 minutes which is `900`.
 #' 
-#' The length of the search-window in seconds. Default value two hours.
+#' The length of the search-window in seconds. Default value 15 minutes.
 #' 
 #' - `arriveBy=true`: number of seconds between the earliest departure time and latest departure time
 #' - `arriveBy=false`: number of seconds between the earliest arrival time and the latest arrival time
@@ -264,10 +301,13 @@
 #' If set to `true`, all used transit trips are required to allow car carriage.
 #' @param maxPreTransitTime Optional. Default is 15min which is `900`.
 #' Maximum time in seconds for the first street leg.
+#' Is limited by server config variable `street_routing_max_prepost_transit_seconds`.
 #' @param maxPostTransitTime Optional. Default is 15min which is `900`.
 #' Maximum time in seconds for the last street leg.
+#' Is limited by server config variable `street_routing_max_prepost_transit_seconds`.
 #' @param maxDirectTime Optional. Default is 30min which is `1800`.
 #' Maximum time in seconds for direct connections.
+#' Is limited by server config variable `street_routing_max_direct_seconds`.
 #' @param fastestDirectFactor Optional. Experimental. Default is `1.0`.
 #' Factor with which the duration of the fastest direct non-public-transit connection is multiplied.
 #' Values > 1.0 allow transit connections that are slower than the fastest direct non-public-transit connection to be found.
@@ -289,20 +329,25 @@
 #' 
 #' @param language language tags as used in OpenStreetMap / GTFS
 #' (usually BCP-47 / ISO 639-1, or ISO 639-2 if there's no ISO 639-1)
-#' @param .return_as How to return the response. One of 'list' (default), 'string', or 'raw'.
-#' @param .json_parser JSON parser when `.return_as = 'list'`. One of 'RcppSimdJson' (default) or 'jsonlite'.
-#' @param .headers Named list of additional HTTP headers to include.
-#' @param .auth Bearer token string or a function `function(req) req` to apply custom auth.
-#' @param .throttle_rate Requests per second (numeric). If set, throttling is applied.
-#' @param .build_only If TRUE, return the unperformed request object.
-#' @param .server Override the server URL for this call.
-#' @param .endpoint A string to override the path for this specific request (e.g., '/v2/users/{id}'). If provided, it will be used instead of the default path from the specification.
-#' @param .referer Optional Referer header value.
-#' @param .req_options Named list of curl options passed to `httr2::req_options()`.
-#' @param .handle_response Optional function `function(resp) ...` to post-process the response.
-#' @param .json_auto_unbox If TRUE (default), auto-unbox scalar JSON values for request bodies.
+#' @param algorithm algorithm to use
+#' 
+#'
+#' Allowed values: RAPTOR, PONG, TB.
+#' @param .return_as A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.
+#' @param .json_parser A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.
+#' @param .headers A named list of extra HTTP headers to add to the request. If no 'Accept' header is provided anywhere, 'Accept: */*' will be sent by default.
+#' @param .auth An authentication token or method (e.g., a bearer token string).
+#' @param .throttle_rate A number to pass to `httr2::req_throttle()` to limit the rate of requests. For example, `15/60` means 15 requests per minute. This overrides any default rate set at client generation time.
+#' @param .build_only A logical. If TRUE, the function will build and return the httr2_request object without performing it. Defaults to FALSE.
+#' @param .server A string to override the base URL for this specific request. If provided, it will be used instead of the default server URL.
+#' @param .endpoint A string to override the path for this specific request. If provided, it will be used instead of the default path from the specification. For example, use '/v2/users' to override the endpoint path.
+#' @param .referer A string to set the Referer HTTP header.
+#' @param .req_options A named list of curl options passed to `httr2::req_options()`. Useful for timeouts, proxies, SSL, etc.
+#' @param .handle_response A function taking an `httr2_response` and returning a value. If supplied, it overrides `.return_as` / `.json_parser` handling. See helpers like `oa3_content_or_stop()`.
+#' @param .json_auto_unbox Logical. If TRUE, JSON bodies are encoded with `auto_unbox = TRUE` (jsonlite). Defaults to FALSE unless overridden.
+#' @param .paginate A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See `oa3_paginate()`.
 #' @export
-mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay = NULL, time = NULL, maxTransfers = NULL, maxTravelTime = NULL, minTransferTime = NULL, additionalTransferTime = NULL, transferTimeFactor = NULL, maxMatchingDistance = NULL, pedestrianProfile = NULL, elevationCosts = NULL, useRoutedTransfers = NULL, detailedTransfers = NULL, joinInterlinedLegs = NULL, transitModes = NULL, directModes = NULL, preTransitModes = NULL, postTransitModes = NULL, directRentalFormFactors = NULL, preTransitRentalFormFactors = NULL, postTransitRentalFormFactors = NULL, directRentalPropulsionTypes = NULL, preTransitRentalPropulsionTypes = NULL, postTransitRentalPropulsionTypes = NULL, directRentalProviders = NULL, preTransitRentalProviders = NULL, postTransitRentalProviders = NULL, ignoreDirectRentalReturnConstraints = NULL, ignorePreTransitRentalReturnConstraints = NULL, ignorePostTransitRentalReturnConstraints = NULL, numItineraries = NULL, pageCursor = NULL, timetableView = NULL, arriveBy = NULL, searchWindow = NULL, requireBikeTransport = NULL, requireCarTransport = NULL, maxPreTransitTime = NULL, maxPostTransitTime = NULL, maxDirectTime = NULL, fastestDirectFactor = NULL, timeout = NULL, passengers = NULL, luggage = NULL, slowDirect = NULL, fastestSlowDirectFactor = NULL, withFares = NULL, withScheduledSkippedStops = NULL, language = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL) {
+mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay = NULL, time = NULL, maxTransfers = NULL, maxTravelTime = NULL, minTransferTime = NULL, additionalTransferTime = NULL, transferTimeFactor = NULL, maxMatchingDistance = NULL, pedestrianProfile = NULL, pedestrianSpeed = NULL, cyclingSpeed = NULL, elevationCosts = NULL, useRoutedTransfers = NULL, detailedTransfers = NULL, joinInterlinedLegs = NULL, transitModes = NULL, directModes = NULL, preTransitModes = NULL, postTransitModes = NULL, directRentalFormFactors = NULL, preTransitRentalFormFactors = NULL, postTransitRentalFormFactors = NULL, directRentalPropulsionTypes = NULL, preTransitRentalPropulsionTypes = NULL, postTransitRentalPropulsionTypes = NULL, directRentalProviders = NULL, directRentalProviderGroups = NULL, preTransitRentalProviders = NULL, preTransitRentalProviderGroups = NULL, postTransitRentalProviders = NULL, postTransitRentalProviderGroups = NULL, ignoreDirectRentalReturnConstraints = NULL, ignorePreTransitRentalReturnConstraints = NULL, ignorePostTransitRentalReturnConstraints = NULL, numItineraries = NULL, maxItineraries = NULL, pageCursor = NULL, timetableView = NULL, arriveBy = NULL, searchWindow = NULL, requireBikeTransport = NULL, requireCarTransport = NULL, maxPreTransitTime = NULL, maxPostTransitTime = NULL, maxDirectTime = NULL, fastestDirectFactor = NULL, timeout = NULL, passengers = NULL, luggage = NULL, slowDirect = NULL, fastestSlowDirectFactor = NULL, withFares = NULL, withScheduledSkippedStops = NULL, language = NULL, algorithm = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
   # --- Self-contained Default Arguments ---
   default_return_as <- "raw"
   default_json_parser <- "RcppSimdJson"
@@ -323,7 +368,7 @@ mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay
 
   # Path parameters
   path_params <- list()
-  path_template <- .endpoint %||% "/api/v4/plan"
+  path_template <- .endpoint %||% "/api/v5/plan"
   if (length(path_params)) {
     # URL-encode each path value
     for (nm in names(path_params)) path_params[[nm]] <- curl::curl_escape(as.character(path_params[[nm]]))
@@ -345,6 +390,8 @@ mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay
   if (!is.null(transferTimeFactor)) query_params[['transferTimeFactor']] <- transferTimeFactor
   if (!is.null(maxMatchingDistance)) query_params[['maxMatchingDistance']] <- maxMatchingDistance
   if (!is.null(pedestrianProfile)) query_params[['pedestrianProfile']] <- pedestrianProfile
+  if (!is.null(pedestrianSpeed)) query_params[['pedestrianSpeed']] <- pedestrianSpeed
+  if (!is.null(cyclingSpeed)) query_params[['cyclingSpeed']] <- cyclingSpeed
   if (!is.null(elevationCosts)) query_params[['elevationCosts']] <- elevationCosts
   if (!is.null(useRoutedTransfers)) query_params[['useRoutedTransfers']] <- useRoutedTransfers
   if (!is.null(detailedTransfers)) query_params[['detailedTransfers']] <- detailedTransfers
@@ -360,12 +407,16 @@ mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay
   if (!is.null(preTransitRentalPropulsionTypes)) query_params[['preTransitRentalPropulsionTypes']] <- preTransitRentalPropulsionTypes
   if (!is.null(postTransitRentalPropulsionTypes)) query_params[['postTransitRentalPropulsionTypes']] <- postTransitRentalPropulsionTypes
   if (!is.null(directRentalProviders)) query_params[['directRentalProviders']] <- directRentalProviders
+  if (!is.null(directRentalProviderGroups)) query_params[['directRentalProviderGroups']] <- directRentalProviderGroups
   if (!is.null(preTransitRentalProviders)) query_params[['preTransitRentalProviders']] <- preTransitRentalProviders
+  if (!is.null(preTransitRentalProviderGroups)) query_params[['preTransitRentalProviderGroups']] <- preTransitRentalProviderGroups
   if (!is.null(postTransitRentalProviders)) query_params[['postTransitRentalProviders']] <- postTransitRentalProviders
+  if (!is.null(postTransitRentalProviderGroups)) query_params[['postTransitRentalProviderGroups']] <- postTransitRentalProviderGroups
   if (!is.null(ignoreDirectRentalReturnConstraints)) query_params[['ignoreDirectRentalReturnConstraints']] <- ignoreDirectRentalReturnConstraints
   if (!is.null(ignorePreTransitRentalReturnConstraints)) query_params[['ignorePreTransitRentalReturnConstraints']] <- ignorePreTransitRentalReturnConstraints
   if (!is.null(ignorePostTransitRentalReturnConstraints)) query_params[['ignorePostTransitRentalReturnConstraints']] <- ignorePostTransitRentalReturnConstraints
   if (!is.null(numItineraries)) query_params[['numItineraries']] <- numItineraries
+  if (!is.null(maxItineraries)) query_params[['maxItineraries']] <- maxItineraries
   if (!is.null(pageCursor)) query_params[['pageCursor']] <- pageCursor
   if (!is.null(timetableView)) query_params[['timetableView']] <- timetableView
   if (!is.null(arriveBy)) query_params[['arriveBy']] <- arriveBy
@@ -384,6 +435,7 @@ mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay
   if (!is.null(withFares)) query_params[['withFares']] <- withFares
   if (!is.null(withScheduledSkippedStops)) query_params[['withScheduledSkippedStops']] <- withScheduledSkippedStops
   if (!is.null(language)) query_params[['language']] <- language
+  if (!is.null(algorithm)) query_params[['algorithm']] <- algorithm
   if (length(query_params) > 0) {
     req <- do.call(httr2::req_url_query, c(list(req), query_params))
   }
@@ -422,6 +474,41 @@ mc_plan <- function(fromPlace = NULL, toPlace = NULL, via = NULL, viaMinimumStay
 
   build_only <- .build_only %||% default_build_only
   if (isTRUE(build_only)) return(req)
+
+  paginate <- .paginate %||% NULL
+  if (!is.null(paginate)) {
+    resps <- oa3_paginate(req, paginate)
+    # If pagination is used, we return the list of responses (parsed or raw)
+    # For now, we return the raw list of responses if return_as='raw',
+    # otherwise we try to parse each one.
+    
+    return_as <- .return_as %||% default_return_as
+    return_as <- if (is.null(return_as)) 'list' else as.character(return_as)[1L]
+    
+    if (return_as == 'raw') return(resps)
+    
+    json_parser <- .json_parser %||% default_json_parser
+    json_parser <- if (is.null(json_parser)) 'RcppSimdJson' else as.character(json_parser)[1L]
+    
+    return(lapply(resps, function(resp) {
+      switch(return_as,
+        'string' = httr2::resp_body_string(resp),
+        'list' = switch(
+          json_parser,
+          'RcppSimdJson' = {
+             if (!requireNamespace('RcppSimdJson', quietly = TRUE)) {
+               httr2::resp_body_json(resp)
+             } else {
+               RcppSimdJson::fparse(httr2::resp_body_string(resp))
+             }
+          },
+          'jsonlite' = httr2::resp_body_json(resp),
+          stop("Unknown .json_parser: '", json_parser, "'.", call. = FALSE)
+        ),
+        stop("Unknown .return_as: '", return_as, "'.", call. = FALSE)
+      )
+    }))
+  }
 
   resp <- httr2::req_perform(req)
 
