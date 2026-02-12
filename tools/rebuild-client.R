@@ -1,3 +1,8 @@
+# Regenerates R client code from the vendored OpenAPI spec.
+#
+# To update the spec from upstream first, run:
+#   source("tools/vendor-openapi.R")  OR  bash tools/vendor-openapi.sh
+#
 # remotes::install_github("e-kotov/openapi3@spec")
 # library(openapi3)
 openapi3::oa3_generate_client(
