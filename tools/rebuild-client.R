@@ -1,3 +1,4 @@
+# remotes::install_github("e-kotov/openapi3@spec")
 # library(openapi3)
 openapi3::oa3_generate_client(
   spec = "tools/openapi.yaml",
