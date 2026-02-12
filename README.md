@@ -13,12 +13,12 @@ status](https://www.r-pkg.org/badges/version/motis.client)](https://CRAN.R-proje
 <!-- badges: end -->
 
 The goal of `motis.client` is to auto-wrap
-\[https://github.com/motis-project/motis\] API automatically based on
-OpenAPI specification. This is not intended to be a user facing package,
-but rather low level api client for other packages to build on top of
-it. `motis.client` is generated entirely from OpenAPI specification
-using https://github.com/e-kotov/openapi3/ experimental R package.
-`motis.client` is intended to be wrapped by
+[MOTIS](https://github.com/motis-project/motis) API automatically based
+on OpenAPI specification. This is not intended to be a user facing
+package, but rather low level api client for other packages to build on
+top of it. `motis.client` is generated entirely from OpenAPI
+specification using https://github.com/e-kotov/openapi3/ experimental R
+package. `motis.client` is intended to be wrapped by
 [`rmotis`](https://github.com/e-kotov/rmotis) R package that is intended
 to be a user facing package for `MOTIS` that automates installation of
 the server and provides user friendly API for the most common use cases
