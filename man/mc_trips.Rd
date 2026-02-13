@@ -13,6 +13,7 @@ mc_trips(
   max = NULL,
   startTime = NULL,
   endTime = NULL,
+  language = NULL,
   .return_as = NULL,
   .json_parser = NULL,
   .headers = NULL,
@@ -24,7 +25,8 @@ mc_trips(
   .referer = NULL,
   .req_options = NULL,
   .handle_response = NULL,
-  .json_auto_unbox = NULL
+  .json_auto_unbox = NULL,
+  .paginate = NULL
 )
 }
 \arguments{
@@ -38,29 +40,34 @@ mc_trips(
 
 \item{endTime}{end if the time window}
 
-\item{.return_as}{How to return the response. One of 'list' (default), 'string', or 'raw'.}
+\item{language}{language tags as used in OpenStreetMap / GTFS
+(usually BCP-47 / ISO 639-1, or ISO 639-2 if there's no ISO 639-1)}
 
-\item{.json_parser}{JSON parser when \code{.return_as = 'list'}. One of 'RcppSimdJson' (default) or 'jsonlite'.}
+\item{.return_as}{A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.}
 
-\item{.headers}{Named list of additional HTTP headers to include.}
+\item{.json_parser}{A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.}
 
-\item{.auth}{Bearer token string or a function \code{function(req) req} to apply custom auth.}
+\item{.headers}{A named list of extra HTTP headers to add to the request. If no 'Accept' header is provided anywhere, 'Accept: \emph{/}' will be sent by default.}
 
-\item{.throttle_rate}{Requests per second (numeric). If set, throttling is applied.}
+\item{.auth}{An authentication token or method (e.g., a bearer token string).}
 
-\item{.build_only}{If TRUE, return the unperformed request object.}
+\item{.throttle_rate}{A number to pass to \code{httr2::req_throttle()} to limit the rate of requests. For example, \code{15/60} means 15 requests per minute. This overrides any default rate set at client generation time.}
 
-\item{.server}{Override the server URL for this call.}
+\item{.build_only}{A logical. If TRUE, the function will build and return the httr2_request object without performing it. Defaults to FALSE.}
 
-\item{.endpoint}{A string to override the path for this specific request (e.g., '/v2/users/{id}'). If provided, it will be used instead of the default path from the specification.}
+\item{.server}{A string to override the base URL for this specific request. If provided, it will be used instead of the default server URL.}
 
-\item{.referer}{Optional Referer header value.}
+\item{.endpoint}{A string to override the path for this specific request. If provided, it will be used instead of the default path from the specification. For example, use '/v2/users' to override the endpoint path.}
 
-\item{.req_options}{Named list of curl options passed to \code{httr2::req_options()}.}
+\item{.referer}{A string to set the Referer HTTP header.}
 
-\item{.handle_response}{Optional function \code{function(resp) ...} to post-process the response.}
+\item{.req_options}{A named list of curl options passed to \code{httr2::req_options()}. Useful for timeouts, proxies, SSL, etc.}
 
-\item{.json_auto_unbox}{If TRUE (default), auto-unbox scalar JSON values for request bodies.}
+\item{.handle_response}{A function taking an \code{httr2_response} and returning a value. If supplied, it overrides \code{.return_as} / \code{.json_parser} handling. See helpers like \code{oa3_content_or_stop()}.}
+
+\item{.json_auto_unbox}{Logical. If TRUE, JSON bodies are encoded with \code{auto_unbox = TRUE} (jsonlite). Defaults to FALSE unless overridden.}
+
+\item{.paginate}{A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See \code{oa3_paginate()}.}
 }
 \description{
 Given a area frame (box defined by top right and bottom left corner) and a time frame,

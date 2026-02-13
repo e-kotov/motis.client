@@ -13,9 +13,11 @@ mc_stoptimes(
   FALSE. = NULL,
   radius = NULL,
   exactRadius = NULL,
+  fetchStops = NULL,
   pageCursor = NULL,
   withScheduledSkippedStops = NULL,
   language = NULL,
+  withAlerts = NULL,
   .return_as = NULL,
   .json_parser = NULL,
   .headers = NULL,
@@ -27,7 +29,8 @@ mc_stoptimes(
   .referer = NULL,
   .req_options = NULL,
   .handle_response = NULL,
-  .json_auto_unbox = NULL
+  .json_auto_unbox = NULL,
+  .paginate = NULL
 )
 }
 \arguments{
@@ -59,7 +62,7 @@ Allowed values: EARLIER, LATER.}
 
 Only return arrivals/departures of the given modes.
 
-Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, METRO, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, CABLE_CAR, FUNICULAR, AREAL_LIFT, OTHER.}
+Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
 
 \item{FALSE.}{the number of events}
 
@@ -76,6 +79,11 @@ are returned.}
 If set to \code{true}, only stations that are phyiscally in the radius are considered.
 If set to \code{false}, additionally to the stations in the radius, equivalences with the same name and children are considered.}
 
+\item{fetchStops}{Experimental. Expect unannounced breaking changes (without version bumps).
+
+Optional. Default is \code{false}. If set to \code{true}, the following stops are returned
+for departures and the previous stops are returned for arrivals.}
+
 \item{pageCursor}{Use the cursor to go to the next "page" of stop times.
 Copy the cursor from the last response and keep the original request as is.
 This will enable you to search for stop times in the next or previous time-window.}
@@ -85,29 +93,33 @@ This will enable you to search for stop times in the next or previous time-windo
 \item{language}{language tags as used in OpenStreetMap / GTFS
 (usually BCP-47 / ISO 639-1, or ISO 639-2 if there's no ISO 639-1)}
 
-\item{.return_as}{How to return the response. One of 'list' (default), 'string', or 'raw'.}
+\item{withAlerts}{Optional. Default is \code{true}. If set to \code{false}, alerts are omitted in the metadata of place for all stopTimes.}
 
-\item{.json_parser}{JSON parser when \code{.return_as = 'list'}. One of 'RcppSimdJson' (default) or 'jsonlite'.}
+\item{.return_as}{A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.}
 
-\item{.headers}{Named list of additional HTTP headers to include.}
+\item{.json_parser}{A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.}
 
-\item{.auth}{Bearer token string or a function \code{function(req) req} to apply custom auth.}
+\item{.headers}{A named list of extra HTTP headers to add to the request. If no 'Accept' header is provided anywhere, 'Accept: \emph{/}' will be sent by default.}
 
-\item{.throttle_rate}{Requests per second (numeric). If set, throttling is applied.}
+\item{.auth}{An authentication token or method (e.g., a bearer token string).}
 
-\item{.build_only}{If TRUE, return the unperformed request object.}
+\item{.throttle_rate}{A number to pass to \code{httr2::req_throttle()} to limit the rate of requests. For example, \code{15/60} means 15 requests per minute. This overrides any default rate set at client generation time.}
 
-\item{.server}{Override the server URL for this call.}
+\item{.build_only}{A logical. If TRUE, the function will build and return the httr2_request object without performing it. Defaults to FALSE.}
 
-\item{.endpoint}{A string to override the path for this specific request (e.g., '/v2/users/{id}'). If provided, it will be used instead of the default path from the specification.}
+\item{.server}{A string to override the base URL for this specific request. If provided, it will be used instead of the default server URL.}
 
-\item{.referer}{Optional Referer header value.}
+\item{.endpoint}{A string to override the path for this specific request. If provided, it will be used instead of the default path from the specification. For example, use '/v2/users' to override the endpoint path.}
 
-\item{.req_options}{Named list of curl options passed to \code{httr2::req_options()}.}
+\item{.referer}{A string to set the Referer HTTP header.}
 
-\item{.handle_response}{Optional function \code{function(resp) ...} to post-process the response.}
+\item{.req_options}{A named list of curl options passed to \code{httr2::req_options()}. Useful for timeouts, proxies, SSL, etc.}
 
-\item{.json_auto_unbox}{If TRUE (default), auto-unbox scalar JSON values for request bodies.}
+\item{.handle_response}{A function taking an \code{httr2_response} and returning a value. If supplied, it overrides \code{.return_as} / \code{.json_parser} handling. See helpers like \code{oa3_content_or_stop()}.}
+
+\item{.json_auto_unbox}{Logical. If TRUE, JSON bodies are encoded with \code{auto_unbox = TRUE} (jsonlite). Defaults to FALSE unless overridden.}
+
+\item{.paginate}{A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See \code{oa3_paginate()}.}
 }
 \description{
 Get the next N departures or arrivals of a stop sorted by time
