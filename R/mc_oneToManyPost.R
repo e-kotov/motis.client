@@ -13,6 +13,7 @@
 #' @param elevationCosts <string> Different elevation cost profiles for street routing. Using a elevation cost profile will prefer routes with a smaller incline and smaller difference in elevation, even if the routed way is longer. - `NONE`: Ignore elevation data for routing. This is the default behavior - `LOW`: Add a low penalty for inclines. This will favor longer paths, if the elevation increase and incline are smaller. - `HIGH`: Add a high penalty for inclines. This will favor even longer paths, if the elevation increase and incline are smaller.
 #' Allowed values: NONE, LOW, HIGH.
 #' @param arriveBy <boolean> true = many to one false = one to many
+#' @param withDistance <boolean> Optional. Default is `false`. If true, the response includes the distance in meters for each path. This requires path reconstruction and may be slower than duration-only queries.
 #' @param .body A list or object to be sent as the request body. If NULL (the default), the body will be constructed from any other top-level arguments you provide.
 #' @param .return_as A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.
 #' @param .json_parser A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.
@@ -28,7 +29,7 @@
 #' @param .json_auto_unbox Logical. If TRUE, JSON bodies are encoded with `auto_unbox = TRUE` (jsonlite). Defaults to FALSE unless overridden.
 #' @param .paginate A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See `oa3_paginate()`.
 #' @export
-mc_oneToManyPost <- function(one = NULL, many = NULL, mode = NULL, max = NULL, maxMatchingDistance = NULL, elevationCosts = NULL, arriveBy = NULL, .body = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
+mc_oneToManyPost <- function(one = NULL, many = NULL, mode = NULL, max = NULL, maxMatchingDistance = NULL, elevationCosts = NULL, arriveBy = NULL, withDistance = NULL, .body = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
   # --- Self-contained Default Arguments ---
   default_return_as <- "raw"
   default_json_parser <- "RcppSimdJson"
@@ -66,7 +67,7 @@ mc_oneToManyPost <- function(one = NULL, many = NULL, mode = NULL, max = NULL, m
   # Request body
   body_content <- .body
   # Map of formal argument names to original JSON field names
-  body_map <- list(one = "one", many = "many", mode = "mode", max = "max", maxMatchingDistance = "maxMatchingDistance", elevationCosts = "elevationCosts", arriveBy = "arriveBy")
+  body_map <- list(one = "one", many = "many", mode = "mode", max = "max", maxMatchingDistance = "maxMatchingDistance", elevationCosts = "elevationCosts", arriveBy = "arriveBy", withDistance = "withDistance")
   if (is.null(body_content)) {
     all_args <- as.list(environment())
     known_args <- c(NULL, '.body', '.return_as', '.json_parser', '.headers', '.auth', '.throttle_rate', '.build_only', '.server', '.endpoint', '.referer', '.req_options', '.handle_response', '.json_auto_unbox', names(body_map))

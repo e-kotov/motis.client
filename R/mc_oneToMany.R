@@ -34,10 +34,10 @@
 #' Allowed values: NONE, LOW, HIGH.
 #' @param arriveBy true = many to one
 #' false = one to many
-#' @param distance Optional. Default is `false`.
+#' @param withDistance Optional. Default is `false`.
 #' If true, the response includes the distance in meters
 #' for each path. This requires path reconstruction and
-#' may be slower than duration-only queries.
+#' is slower than duration-only queries.
 #' @param .return_as A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.
 #' @param .json_parser A string specifying which parser to use when .return_as = 'list'. Defaults to 'RcppSimdJson' (faster) or 'jsonlite'. Beware that their output may differ slightly.
 #' @param .headers A named list of extra HTTP headers to add to the request. If no 'Accept' header is provided anywhere, 'Accept: */*' will be sent by default.
@@ -52,7 +52,7 @@
 #' @param .json_auto_unbox Logical. If TRUE, JSON bodies are encoded with `auto_unbox = TRUE` (jsonlite). Defaults to FALSE unless overridden.
 #' @param .paginate A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See `oa3_paginate()`.
 #' @export
-mc_oneToMany <- function(one = NULL, many = NULL, mode = NULL, max = NULL, maxMatchingDistance = NULL, elevationCosts = NULL, arriveBy = NULL, distance = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
+mc_oneToMany <- function(one = NULL, many = NULL, mode = NULL, max = NULL, maxMatchingDistance = NULL, elevationCosts = NULL, arriveBy = NULL, withDistance = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
   # --- Self-contained Default Arguments ---
   default_return_as <- "raw"
   default_json_parser <- "RcppSimdJson"
@@ -90,7 +90,7 @@ mc_oneToMany <- function(one = NULL, many = NULL, mode = NULL, max = NULL, maxMa
   if (!is.null(maxMatchingDistance)) query_params[['maxMatchingDistance']] <- maxMatchingDistance
   if (!is.null(elevationCosts)) query_params[['elevationCosts']] <- elevationCosts
   if (!is.null(arriveBy)) query_params[['arriveBy']] <- arriveBy
-  if (!is.null(distance)) query_params[['distance']] <- distance
+  if (!is.null(withDistance)) query_params[['withDistance']] <- withDistance
   if (length(query_params) > 0) {
     req <- do.call(httr2::req_url_query, c(list(req), query_params))
   }
