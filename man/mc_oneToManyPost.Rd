@@ -13,6 +13,7 @@ mc_oneToManyPost(
   maxMatchingDistance = NULL,
   elevationCosts = NULL,
   arriveBy = NULL,
+  withDistance = NULL,
   .body = NULL,
   .return_as = NULL,
   .json_parser = NULL,
@@ -45,6 +46,8 @@ Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHA
 Allowed values: NONE, LOW, HIGH.}
 
 \item{arriveBy}{\if{html}{\out{<boolean>}} true = many to one false = one to many}
+
+\item{withDistance}{\if{html}{\out{<boolean>}} Optional. Default is \code{false}. If true, the response includes the distance in meters for each path. This requires path reconstruction and may be slower than duration-only queries.}
 
 \item{.body}{A list or object to be sent as the request body. If NULL (the default), the body will be constructed from any other top-level arguments you provide.}
 

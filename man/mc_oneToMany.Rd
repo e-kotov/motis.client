@@ -13,7 +13,7 @@ mc_oneToMany(
   maxMatchingDistance = NULL,
   elevationCosts = NULL,
   arriveBy = NULL,
-  distance = NULL,
+  withDistance = NULL,
   .return_as = NULL,
   .json_parser = NULL,
   .headers = NULL,
@@ -66,10 +66,10 @@ Allowed values: NONE, LOW, HIGH.}
 \item{arriveBy}{true = many to one
 false = one to many}
 
-\item{distance}{Optional. Default is \code{false}.
+\item{withDistance}{Optional. Default is \code{false}.
 If true, the response includes the distance in meters
 for each path. This requires path reconstruction and
-may be slower than duration-only queries.}
+is slower than duration-only queries.}
 
 \item{.return_as}{A string specifying the return format. Defaults to 'list'. Options are 'list' for a parsed R list, 'raw' for the raw httr2_response object, or 'string' for the raw JSON string.}
 
