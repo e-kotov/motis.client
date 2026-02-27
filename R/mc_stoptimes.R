@@ -5,6 +5,11 @@
 #'
 #' @param stopId stop id of the stop to retrieve departures/arrivals for
 #' 
+#' @param center Anchor coordinate. Format: latitude,longitude pair.
+#' Used as fallback when "stopId" is missing or can't be found.
+#' If both are provided and "stopId" resolves, "stopId" is used.
+#' If "stopId" does not resolve, "center" is used instead. "radius" is
+#' required when querying by "center" (i.e. without a valid "stopId").
 #' @param time Optional. Defaults to the current time.
 #' 
 #' @param arriveBy Optional. Default is `false`.
@@ -22,13 +27,16 @@
 #' arrivals / departures if `LATER` is selected.
 #'
 #' Allowed values: EARLIER, LATER.
+#' @param window Optional. Window in seconds around `time`.
+#' Limiting the response to those that are at most `window` seconds aways in time.
+#' If both `n` and `window` are set, it uses whichever returns more.
 #' @param mode Optional. Default is all transit modes.
 #' 
 #' Only return arrivals/departures of the given modes.
 #'
-#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
-#' @param FALSE. the number of events
-#' 
+#' Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, DEBUG_BUS_ROUTE, DEBUG_RAILWAY_ROUTE, DEBUG_FERRY_ROUTE, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.
+#' @param FALSE. Minimum number of events to return. If both `n` and `window`
+#' are provided, the API uses whichever returns more events.
 #' @param radius Optional. Radius in meters.
 #' 
 #' Default is that only stop times of the parent of the stop itself
@@ -67,7 +75,7 @@
 #' @param .json_auto_unbox Logical. If TRUE, JSON bodies are encoded with `auto_unbox = TRUE` (jsonlite). Defaults to FALSE unless overridden.
 #' @param .paginate A logical, character string, or function to enable pagination. If TRUE (or "link_header"), uses Link headers. Other options: "page_param", "cursor_param", or a custom function. See `oa3_paginate()`.
 #' @export
-mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction = NULL, mode = NULL, FALSE. = NULL, radius = NULL, exactRadius = NULL, fetchStops = NULL, pageCursor = NULL, withScheduledSkippedStops = NULL, language = NULL, withAlerts = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
+mc_stoptimes <- function(stopId = NULL, center = NULL, time = NULL, arriveBy = NULL, direction = NULL, window = NULL, mode = NULL, FALSE. = NULL, radius = NULL, exactRadius = NULL, fetchStops = NULL, pageCursor = NULL, withScheduledSkippedStops = NULL, language = NULL, withAlerts = NULL, .return_as = NULL, .json_parser = NULL, .headers = NULL, .auth = NULL, .throttle_rate = NULL, .build_only = NULL, .server = NULL, .endpoint = NULL, .referer = NULL, .req_options = NULL, .handle_response = NULL, .json_auto_unbox = NULL, .paginate = NULL) {
   # --- Self-contained Default Arguments ---
   default_return_as <- "raw"
   default_json_parser <- "RcppSimdJson"
@@ -99,9 +107,11 @@ mc_stoptimes <- function(stopId = NULL, time = NULL, arriveBy = NULL, direction 
   # Query parameters
   query_params <- list()
   if (!is.null(stopId)) query_params[['stopId']] <- stopId
+  if (!is.null(center)) query_params[['center']] <- center
   if (!is.null(time)) query_params[['time']] <- time
   if (!is.null(arriveBy)) query_params[['arriveBy']] <- arriveBy
   if (!is.null(direction)) query_params[['direction']] <- direction
+  if (!is.null(window)) query_params[['window']] <- window
   if (!is.null(mode)) query_params[['mode']] <- mode
   if (!is.null(FALSE.)) query_params[['FALSE']] <- FALSE.
   if (!is.null(radius)) query_params[['radius']] <- radius

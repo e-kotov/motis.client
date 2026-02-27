@@ -6,9 +6,11 @@
 \usage{
 mc_stoptimes(
   stopId = NULL,
+  center = NULL,
   time = NULL,
   arriveBy = NULL,
   direction = NULL,
+  window = NULL,
   mode = NULL,
   FALSE. = NULL,
   radius = NULL,
@@ -36,6 +38,12 @@ mc_stoptimes(
 \arguments{
 \item{stopId}{stop id of the stop to retrieve departures/arrivals for}
 
+\item{center}{Anchor coordinate. Format: latitude,longitude pair.
+Used as fallback when "stopId" is missing or can't be found.
+If both are provided and "stopId" resolves, "stopId" is used.
+If "stopId" does not resolve, "center" is used instead. "radius" is
+required when querying by "center" (i.e. without a valid "stopId").}
+
 \item{time}{Optional. Defaults to the current time.}
 
 \item{arriveBy}{Optional. Default is \code{false}.
@@ -58,13 +66,18 @@ arrivals / departures if \code{LATER} is selected.
 
 Allowed values: EARLIER, LATER.}
 
+\item{window}{Optional. Window in seconds around \code{time}.
+Limiting the response to those that are at most \code{window} seconds aways in time.
+If both \code{n} and \code{window} are set, it uses whichever returns more.}
+
 \item{mode}{Optional. Default is all transit modes.
 
 Only return arrivals/departures of the given modes.
 
-Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
+Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, DEBUG_BUS_ROUTE, DEBUG_RAILWAY_ROUTE, DEBUG_FERRY_ROUTE, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
 
-\item{FALSE.}{the number of events}
+\item{FALSE.}{Minimum number of events to return. If both \code{n} and \code{window}
+are provided, the API uses whichever returns more events.}
 
 \item{radius}{Optional. Radius in meters.
 

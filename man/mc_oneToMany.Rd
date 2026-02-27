@@ -32,13 +32,15 @@ mc_oneToMany(
 \arguments{
 \item{one}{geo location as latitude;longitude}
 
-\item{many}{geo locations as latitude;longitude,latitude;longitude,...}
+\item{many}{geo locations as latitude;longitude,latitude;longitude,...
+
+The number of accepted locations is limited by server config variable \code{onetomany_max_many}.}
 
 \item{mode}{routing profile to use (currently supported: \code{WALK}, \code{BIKE}, \code{CAR})
 
-Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
+Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, DEBUG_BUS_ROUTE, DEBUG_RAILWAY_ROUTE, DEBUG_FERRY_ROUTE, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
 
-\item{max}{maximum travel time in seconds}
+\item{max}{maximum travel time in seconds. Is limited by server config variable \code{street_routing_max_direct_seconds}.}
 
 \item{maxMatchingDistance}{maximum matching distance in meters to match geo coordinates to the street network}
 

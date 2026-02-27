@@ -11,8 +11,8 @@ mc_oneToManyPost(
   mode = NULL,
   max = NULL,
   maxMatchingDistance = NULL,
-  elevationCosts = NULL,
   arriveBy = NULL,
+  elevationCosts = NULL,
   withDistance = NULL,
   .body = NULL,
   .return_as = NULL,
@@ -33,21 +33,21 @@ mc_oneToManyPost(
 \arguments{
 \item{one}{\if{html}{\out{<string>}} geo location as latitude;longitude}
 
-\item{many}{\if{html}{\out{<array>}} geo locations as latitude;longitude,latitude;longitude,...}
+\item{many}{\if{html}{\out{<array>}} geo locations as latitude;longitude,latitude;longitude,... The number of accepted locations is limited by server config variable \code{onetomany_max_many}.}
 
-\item{mode}{\if{html}{\out{<string>}} # Street modes - \code{WALK} - \code{BIKE} - \code{RENTAL} Experimental. Expect unannounced breaking changes (without version bumps) for all parameters and returned structs. - \code{CAR} - \code{CAR_PARKING} Experimental. Expect unannounced breaking changes (without version bumps) for all parameters and returned structs. - \code{CAR_DROPOFF} Experimental. Expect unannounced breaking changes (without version bumps) for all perameters and returned structs. - \code{ODM} on-demand taxis from the Prima+ÖV Project - \code{RIDE_SHARING} ride sharing from the Prima+ÖV Project - \code{FLEX} flexible transports # Transit modes - \code{TRANSIT}: translates to \verb{TRAM,FERRY,AIRPLANE,BUS,COACH,RAIL,ODM,FUNICULAR,AERIAL_LIFT,OTHER} - \code{TRAM}: trams - \code{SUBWAY}: subway trains (Paris Metro, London Underground, but also NYC Subway, Hamburger Hochbahn, and other non-underground services) - \code{FERRY}: ferries - \code{AIRPLANE}: airline flights - \code{BUS}: short distance buses (does not include \code{COACH}) - \code{COACH}: long distance buses (does not include \code{BUS}) - \code{RAIL}: translates to \verb{HIGHSPEED_RAIL,LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,REGIONAL_FAST_RAIL,SUBURBAN,SUBWAY} - \code{HIGHSPEED_RAIL}: long distance high speed trains (e.g. TGV) - \code{LONG_DISTANCE}: long distance inter city trains - \code{NIGHT_RAIL}: long distance night trains - \code{REGIONAL_FAST_RAIL}: regional express routes that skip low traffic stops to be faster - \code{REGIONAL_RAIL}: regional train - \code{SUBURBAN}: suburban trains (e.g. S-Bahn, RER, Elizabeth Line, ...) - \code{ODM}: demand responsive transport - \code{FUNICULAR}: Funicular. Any rail system designed for steep inclines. - \code{AERIAL_LIFT}: Aerial lift, suspended cable car (e.g., gondola lift, aerial tramway). Cable transport where cabins, cars, gondolas or open chairs are suspended by means of one or more cables. - \code{AREAL_LIFT}: deprecated - \code{METRO}: deprecated - \code{CABLE_CAR}: deprecated
-Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
+\item{mode}{\if{html}{\out{<string>}} # Street modes - \code{WALK} - \code{BIKE} - \code{RENTAL} Experimental. Expect unannounced breaking changes (without version bumps) for all parameters and returned structs. - \code{CAR} - \code{CAR_PARKING} Experimental. Expect unannounced breaking changes (without version bumps) for all parameters and returned structs. - \code{CAR_DROPOFF} Experimental. Expect unannounced breaking changes (without version bumps) for all perameters and returned structs. - \code{ODM} on-demand taxis from the Prima+ÖV Project - \code{RIDE_SHARING} ride sharing from the Prima+ÖV Project - \code{FLEX} flexible transports # Transit modes - \code{TRANSIT}: translates to \verb{TRAM,FERRY,AIRPLANE,BUS,COACH,RAIL,ODM,FUNICULAR,AERIAL_LIFT,OTHER} - \code{TRAM}: trams - \code{SUBWAY}: subway trains (Paris Metro, London Underground, but also NYC Subway, Hamburger Hochbahn, and other non-underground services) - \code{FERRY}: ferries - \code{AIRPLANE}: airline flights - \code{BUS}: short distance buses (does not include \code{COACH}) - \code{COACH}: long distance buses (does not include \code{BUS}) - \code{RAIL}: translates to \verb{HIGHSPEED_RAIL,LONG_DISTANCE,NIGHT_RAIL,REGIONAL_RAIL,SUBURBAN,SUBWAY} - \code{HIGHSPEED_RAIL}: long distance high speed trains (e.g. TGV) - \code{LONG_DISTANCE}: long distance inter city trains - \code{NIGHT_RAIL}: long distance night trains - \code{REGIONAL_FAST_RAIL}: deprecated, \code{REGIONAL_RAIL} will be used - \code{REGIONAL_RAIL}: regional train - \code{SUBURBAN}: suburban trains (e.g. S-Bahn, RER, Elizabeth Line, ...) - \code{ODM}: demand responsive transport - \code{FUNICULAR}: Funicular. Any rail system designed for steep inclines. - \code{AERIAL_LIFT}: Aerial lift, suspended cable car (e.g., gondola lift, aerial tramway). Cable transport where cabins, cars, gondolas or open chairs are suspended by means of one or more cables. - \code{AREAL_LIFT}: deprecated - \code{METRO}: deprecated - \code{CABLE_CAR}: deprecated
+Allowed values: WALK, BIKE, RENTAL, CAR, CAR_PARKING, CAR_DROPOFF, ODM, RIDE_SHARING, FLEX, DEBUG_BUS_ROUTE, DEBUG_RAILWAY_ROUTE, DEBUG_FERRY_ROUTE, TRANSIT, TRAM, SUBWAY, FERRY, AIRPLANE, BUS, COACH, RAIL, HIGHSPEED_RAIL, LONG_DISTANCE, NIGHT_RAIL, REGIONAL_FAST_RAIL, REGIONAL_RAIL, SUBURBAN, FUNICULAR, AERIAL_LIFT, OTHER, AREAL_LIFT, METRO, CABLE_CAR.}
 
-\item{max}{\if{html}{\out{<number>}} maximum travel time in seconds}
+\item{max}{\if{html}{\out{<number>}} maximum travel time in seconds. Is limited by server config variable \code{street_routing_max_direct_seconds}.}
 
 \item{maxMatchingDistance}{\if{html}{\out{<number>}} maximum matching distance in meters to match geo coordinates to the street network}
+
+\item{arriveBy}{\if{html}{\out{<boolean>}} true = many to one false = one to many}
 
 \item{elevationCosts}{\if{html}{\out{<string>}} Different elevation cost profiles for street routing. Using a elevation cost profile will prefer routes with a smaller incline and smaller difference in elevation, even if the routed way is longer. - \code{NONE}: Ignore elevation data for routing. This is the default behavior - \code{LOW}: Add a low penalty for inclines. This will favor longer paths, if the elevation increase and incline are smaller. - \code{HIGH}: Add a high penalty for inclines. This will favor even longer paths, if the elevation increase and incline are smaller.
 Allowed values: NONE, LOW, HIGH.}
 
-\item{arriveBy}{\if{html}{\out{<boolean>}} true = many to one false = one to many}
-
-\item{withDistance}{\if{html}{\out{<boolean>}} Optional. Default is \code{false}. If true, the response includes the distance in meters for each path. This requires path reconstruction and may be slower than duration-only queries.}
+\item{withDistance}{\if{html}{\out{<boolean>}} If true, the response includes the distance in meters for each path. This requires path reconstruction and may be slower than duration-only queries.}
 
 \item{.body}{A list or object to be sent as the request body. If NULL (the default), the body will be constructed from any other top-level arguments you provide.}
 
